@@ -1,0 +1,19 @@
+---
+title: "A Big Welcome!"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+![](images/welcome.jpg)
+
+### Hey there
+
+* This is Sophie Chen from p8105 and I am like everyone else in this class exploring the fun stuff about data science.
+* Originally from Beijing, China; studied in Beijing, New York, California etc...
+
+### Little exploration
+
+*
+

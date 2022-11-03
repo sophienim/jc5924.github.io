@@ -1,0 +1,11 @@
+---
+title: "About"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+### About Me...
+
+* If you want to know more about me, please feel free to take a quick look of my [resume](resume.html).
