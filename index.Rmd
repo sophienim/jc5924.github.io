@@ -12,7 +12,7 @@ output:
 
 * This is Sophie Chen from p8105 and I am like everyone else in this class exploring the fun stuff about data science.
 * Originally from Beijing, China; studied in Beijing, New York, California etc...
-
+* Not so fun fact about me...I have not seen my family for almost three years during the pandemic...
 
 ### Little exploration
 

@@ -1,0 +1,17 @@
+---
+title: "Dashboard for instacart data"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(flexdashboard)
+library(p8105.datasets)
+library(plotly)
+
+data("instacart")
+```
+
