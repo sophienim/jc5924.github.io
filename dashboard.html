@@ -11,7 +11,7 @@
 
 
 
-<title>Dashboard for instacart data</title>
+<title>Dashboard for NY NOAA data</title>
 
 <script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -32,6 +32,13 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -278,12 +285,103 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Dashboard for instacart data</h1>
+<h1 class="title toc-ignore">Dashboard for NY NOAA data</h1>
 
 </div>
 
 
+<ul>
+<li>Data of NY NOAA in year 2007</li>
+</ul>
+<pre class="r"><code>data(&quot;ny_noaa&quot;)
 
+ny_noaa=
+  ny_noaa %&gt;% 
+  slice_sample(n=4000) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  separate(date,into = c(&quot;year&quot;,&quot;month&quot;,&quot;day&quot;)) %&gt;%
+  mutate(year=as.integer(year),
+         month=month.name[as.numeric(month)],
+         day=as.numeric(day),
+         prcp=as.numeric(prcp)/10,
+         tmax=as.numeric(tmax)/10,
+         tmin=as.numeric(tmin)/10) %&gt;% 
+  filter(year==2007) %&gt;% 
+  select(-id,-snwd)
+ny_noaa</code></pre>
+<pre><code>## # A tibble: 125 × 7
+##     year month       day  prcp  snow  tmax  tmin
+##    &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1  2007 August        8  24.1     0  32.8  22.8
+##  2  2007 February     13  NA       0  -3.9 -12.8
+##  3  2007 September    28   9.4     0  20.6  11.7
+##  4  2007 March        17  14     203  NA    NA  
+##  5  2007 October      13  10.4     0  11.7  -2.2
+##  6  2007 December     30   0       0   2.2  -2.8
+##  7  2007 October      31   0       0  14.4   5  
+##  8  2007 December     23   0       0   6.7  -4.4
+##  9  2007 August       29   0      NA  31.1   9.4
+## 10  2007 September     5   0       0  NA    NA  
+## # … with 115 more rows</code></pre>
+<div id="column" class="section level2" data-width="650">
+<h2>Column</h2>
+<div id="plot-1-tmaxc-vs-tminc-for-the-year-2007"
+class="section level3">
+<h3>Plot 1: Tmax(C) VS Tmin(C) for the year 2007</h3>
+<pre class="r"><code>ny_noaa %&gt;% 
+  mutate(text_label=str_c(&quot;month:&quot;, month)) %&gt;% 
+  plot_ly(
+    x = ~ tmin, 
+    y = ~ tmax, 
+    color = ~ month, 
+    type = &quot;scatter&quot;, 
+    mode = &quot;markers&quot;, 
+    colors=&quot;viridis&quot;,
+    text = ~ text_label,
+    alpha = 0.5
+    )</code></pre>
+<pre><code>## Warning: Ignoring 54 observations</code></pre>
+<div id="htmlwidget-43be18d13afa351fdbca" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-43be18d13afa351fdbca">{"x":{"visdat":{"164a065075ebb":["function () ","plotlyVisDat"]},"cur_data":"164a065075ebb","attrs":{"164a065075ebb":{"x":{},"y":{},"mode":"markers","text":{},"color":{},"colors":"viridis","alpha":0.5,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"tmin"},"yaxis":{"domain":[0,1],"automargin":true,"title":"tmax"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-2.2,-4.4,5,2.8],"y":[18.9,5.6,8.9,7.2],"mode":"markers","text":["month:April","month:April","month:April","month:April"],"type":"scatter","name":"April","marker":{"color":"rgba(68,1,84,0.5)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,0.5)"},"error_y":{"color":"rgba(68,1,84,0.5)"},"error_x":{"color":"rgba(68,1,84,0.5)"},"line":{"color":"rgba(68,1,84,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[22.8,9.4,13.9,11.7,13.3,21.7,17.8,16.7],"y":[32.8,31.1,28.9,26.7,15,32.2,29.4,26.1],"mode":"markers","text":["month:August","month:August","month:August","month:August","month:August","month:August","month:August","month:August"],"type":"scatter","name":"August","marker":{"color":"rgba(72,33,115,0.5)","line":{"color":"rgba(72,33,115,1)"}},"textfont":{"color":"rgba(72,33,115,0.5)"},"error_y":{"color":"rgba(72,33,115,0.5)"},"error_x":{"color":"rgba(72,33,115,0.5)"},"line":{"color":"rgba(72,33,115,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[-2.8,-4.4,-5,-11.1,0.6,-1.7,-6.1,-7.2],"y":[2.2,6.7,0,-2.2,7.8,5.6,7.2,0.6],"mode":"markers","text":["month:December","month:December","month:December","month:December","month:December","month:December","month:December","month:December"],"type":"scatter","name":"December","marker":{"color":"rgba(67,62,133,0.5)","line":{"color":"rgba(67,62,133,1)"}},"textfont":{"color":"rgba(67,62,133,0.5)"},"error_y":{"color":"rgba(67,62,133,0.5)"},"error_x":{"color":"rgba(67,62,133,0.5)"},"line":{"color":"rgba(67,62,133,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[-12.8,-13.3,-17.2,-23.3,-16.7,-5.6],"y":[-3.9,-2.2,-5,-6.1,1.7,-2.8],"mode":"markers","text":["month:February","month:February","month:February","month:February","month:February","month:February"],"type":"scatter","name":"February","marker":{"color":"rgba(56,89,140,0.5)","line":{"color":"rgba(56,89,140,1)"}},"textfont":{"color":"rgba(56,89,140,0.5)"},"error_y":{"color":"rgba(56,89,140,0.5)"},"error_x":{"color":"rgba(56,89,140,0.5)"},"line":{"color":"rgba(56,89,140,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[-18.9,-8.8,-1.7,-6,-8.2,-19.4],"y":[-1.1,1.7,3.9,-2.7,-3.8,0.6],"mode":"markers","text":["month:January","month:January","month:January","month:January","month:January","month:January"],"type":"scatter","name":"January","marker":{"color":"rgba(45,112,142,0.5)","line":{"color":"rgba(45,112,142,1)"}},"textfont":{"color":"rgba(45,112,142,0.5)"},"error_y":{"color":"rgba(45,112,142,0.5)"},"error_x":{"color":"rgba(45,112,142,0.5)"},"line":{"color":"rgba(45,112,142,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[11.1,6.1,21.7,9.4,14.4,18.3,12.8,11.7,11.1],"y":[27.8,22.8,34.4,25.6,23.3,28.3,21.7,25.6,26.7],"mode":"markers","text":["month:July","month:July","month:July","month:July","month:July","month:July","month:July","month:July","month:July"],"type":"scatter","name":"July","marker":{"color":"rgba(37,133,142,0.5)","line":{"color":"rgba(37,133,142,1)"}},"textfont":{"color":"rgba(37,133,142,0.5)"},"error_y":{"color":"rgba(37,133,142,0.5)"},"error_x":{"color":"rgba(37,133,142,0.5)"},"line":{"color":"rgba(37,133,142,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[11.7,10.6,15.6,12.8,19.4],"y":[26.1,20,27.8,29.4,29.4],"mode":"markers","text":["month:June","month:June","month:June","month:June","month:June"],"type":"scatter","name":"June","marker":{"color":"rgba(30,155,138,0.5)","line":{"color":"rgba(30,155,138,1)"}},"textfont":{"color":"rgba(30,155,138,0.5)"},"error_y":{"color":"rgba(30,155,138,0.5)"},"error_x":{"color":"rgba(30,155,138,0.5)"},"line":{"color":"rgba(30,155,138,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[-8.3,-1.7,-2.2,-5.6,-0.6],"y":[3.3,9.4,11.7,3.3,9.4],"mode":"markers","text":["month:March","month:March","month:March","month:March","month:March"],"type":"scatter","name":"March","marker":{"color":"rgba(43,176,127,0.5)","line":{"color":"rgba(43,176,127,1)"}},"textfont":{"color":"rgba(43,176,127,0.5)"},"error_y":{"color":"rgba(43,176,127,0.5)"},"error_x":{"color":"rgba(43,176,127,0.5)"},"line":{"color":"rgba(43,176,127,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[5.6,8.9,0.6,4.4,5.6],"y":[16.7,28.3,17.8,19.4,27.8],"mode":"markers","text":["month:May","month:May","month:May","month:May","month:May"],"type":"scatter","name":"May","marker":{"color":"rgba(81,196,106,0.5)","line":{"color":"rgba(81,196,106,1)"}},"textfont":{"color":"rgba(81,196,106,0.5)"},"error_y":{"color":"rgba(81,196,106,0.5)"},"error_x":{"color":"rgba(81,196,106,0.5)"},"line":{"color":"rgba(81,196,106,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[-2.1,-1.7,2.8,1.7,-2.8,-0.5],"y":[5,4.4,8.3,10.6,2.8,8.9],"mode":"markers","text":["month:November","month:November","month:November","month:November","month:November","month:November"],"type":"scatter","name":"November","marker":{"color":"rgba(133,213,74,0.5)","line":{"color":"rgba(133,213,74,1)"}},"textfont":{"color":"rgba(133,213,74,0.5)"},"error_y":{"color":"rgba(133,213,74,0.5)"},"error_x":{"color":"rgba(133,213,74,0.5)"},"line":{"color":"rgba(133,213,74,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[-2.2,5,15.6,2.2,15,18.3],"y":[11.7,14.4,25,13.3,28.3,24.4],"mode":"markers","text":["month:October","month:October","month:October","month:October","month:October","month:October"],"type":"scatter","name":"October","marker":{"color":"rgba(194,223,35,0.5)","line":{"color":"rgba(194,223,35,1)"}},"textfont":{"color":"rgba(194,223,35,0.5)"},"error_y":{"color":"rgba(194,223,35,0.5)"},"error_x":{"color":"rgba(194,223,35,0.5)"},"line":{"color":"rgba(194,223,35,0.5)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[11.7,1.7,18.9],"y":[20.6,23.9,30],"mode":"markers","text":["month:September","month:September","month:September"],"type":"scatter","name":"September","marker":{"color":"rgba(253,231,37,0.5)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,0.5)"},"error_y":{"color":"rgba(253,231,37,0.5)"},"error_x":{"color":"rgba(253,231,37,0.5)"},"line":{"color":"rgba(253,231,37,0.5)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="column-1" class="section level2" data-width="350">
+<h2>Column</h2>
+<div id="plot-2-tminc-distribution-for-the-year-2007"
+class="section level3">
+<h3>Plot 2: tmin(C) distribution for the year 2007</h3>
+<pre class="r"><code>ny_noaa %&gt;% 
+  plot_ly(
+    y = ~ tmin, 
+    x = ~ month, 
+    color = ~ month, 
+    text = ~ month, 
+    type = &quot;box&quot;, 
+    colors = &quot;viridis&quot;)</code></pre>
+<pre><code>## Warning: Ignoring 54 observations</code></pre>
+<div id="htmlwidget-34d1cde17b6875f5e2f6" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-34d1cde17b6875f5e2f6">{"x":{"visdat":{"164a035028eba":["function () ","plotlyVisDat"]},"cur_data":"164a035028eba","attrs":{"164a035028eba":{"y":{},"x":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"box"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"month","type":"category","categoryorder":"array","categoryarray":["April","August","December","February","January","July","June","March","May","November","October","September"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"tmin"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"fillcolor":"rgba(68,1,84,0.5)","y":[-2.2,-4.4,5,2.8],"x":["April","April","April","April"],"text":["April","April","April","April"],"type":"box","name":"April","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(72,33,115,0.5)","y":[22.8,9.4,13.9,11.7,13.3,21.7,17.8,16.7],"x":["August","August","August","August","August","August","August","August"],"text":["August","August","August","August","August","August","August","August"],"type":"box","name":"August","marker":{"color":"rgba(72,33,115,1)","line":{"color":"rgba(72,33,115,1)"}},"line":{"color":"rgba(72,33,115,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(67,62,133,0.5)","y":[-2.8,-4.4,-5,-11.1,0.6,-1.7,-6.1,-7.2],"x":["December","December","December","December","December","December","December","December"],"text":["December","December","December","December","December","December","December","December"],"type":"box","name":"December","marker":{"color":"rgba(67,62,133,1)","line":{"color":"rgba(67,62,133,1)"}},"line":{"color":"rgba(67,62,133,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(56,89,140,0.5)","y":[-12.8,-13.3,-17.2,-23.3,-16.7,-5.6],"x":["February","February","February","February","February","February"],"text":["February","February","February","February","February","February"],"type":"box","name":"February","marker":{"color":"rgba(56,89,140,1)","line":{"color":"rgba(56,89,140,1)"}},"line":{"color":"rgba(56,89,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(45,112,142,0.5)","y":[-18.9,-8.8,-1.7,-6,-8.2,-19.4],"x":["January","January","January","January","January","January"],"text":["January","January","January","January","January","January"],"type":"box","name":"January","marker":{"color":"rgba(45,112,142,1)","line":{"color":"rgba(45,112,142,1)"}},"line":{"color":"rgba(45,112,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(37,133,142,0.5)","y":[11.1,6.1,21.7,9.4,14.4,18.3,12.8,11.7,11.1],"x":["July","July","July","July","July","July","July","July","July"],"text":["July","July","July","July","July","July","July","July","July"],"type":"box","name":"July","marker":{"color":"rgba(37,133,142,1)","line":{"color":"rgba(37,133,142,1)"}},"line":{"color":"rgba(37,133,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(30,155,138,0.5)","y":[11.7,10.6,15.6,12.8,19.4],"x":["June","June","June","June","June"],"text":["June","June","June","June","June"],"type":"box","name":"June","marker":{"color":"rgba(30,155,138,1)","line":{"color":"rgba(30,155,138,1)"}},"line":{"color":"rgba(30,155,138,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(43,176,127,0.5)","y":[-8.3,-1.7,-2.2,-5.6,-0.6],"x":["March","March","March","March","March"],"text":["March","March","March","March","March"],"type":"box","name":"March","marker":{"color":"rgba(43,176,127,1)","line":{"color":"rgba(43,176,127,1)"}},"line":{"color":"rgba(43,176,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(81,196,106,0.5)","y":[5.6,8.9,0.6,4.4,5.6],"x":["May","May","May","May","May"],"text":["May","May","May","May","May"],"type":"box","name":"May","marker":{"color":"rgba(81,196,106,1)","line":{"color":"rgba(81,196,106,1)"}},"line":{"color":"rgba(81,196,106,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(133,213,74,0.5)","y":[-2.1,-1.7,2.8,1.7,-2.8,-0.5],"x":["November","November","November","November","November","November"],"text":["November","November","November","November","November","November"],"type":"box","name":"November","marker":{"color":"rgba(133,213,74,1)","line":{"color":"rgba(133,213,74,1)"}},"line":{"color":"rgba(133,213,74,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(194,223,35,0.5)","y":[-2.2,5,15.6,2.2,15,18.3],"x":["October","October","October","October","October","October"],"text":["October","October","October","October","October","October"],"type":"box","name":"October","marker":{"color":"rgba(194,223,35,1)","line":{"color":"rgba(194,223,35,1)"}},"line":{"color":"rgba(194,223,35,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(253,231,37,0.5)","y":[11.7,1.7,18.9],"x":["September","September","September"],"text":["September","September","September"],"type":"box","name":"September","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="plot-3-recorded-distribution-in-each-month-for-2007"
+class="section level3">
+<h3>Plot 3: Recorded distribution in each month for 2007</h3>
+<pre class="r"><code>ny_noaa %&gt;% 
+  drop_na(month) %&gt;%
+  count(month) %&gt;% 
+  mutate(month = fct_reorder(month, n)) %&gt;% 
+  plot_ly(x = ~month, 
+          y = ~n, 
+          color = ~month, 
+          type = &quot;bar&quot;)</code></pre>
+<pre><code>## Warning in RColorBrewer::brewer.pal(N, &quot;Set2&quot;): n too large, allowed maximum for palette Set2 is 8
+## Returning the palette you asked for with that many colors
+
+## Warning in RColorBrewer::brewer.pal(N, &quot;Set2&quot;): n too large, allowed maximum for palette Set2 is 8
+## Returning the palette you asked for with that many colors</code></pre>
+<div id="htmlwidget-178e597207ce8d890dd4" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-178e597207ce8d890dd4">{"x":{"visdat":{"164a072338ba0":["function () ","plotlyVisDat"]},"cur_data":"164a072338ba0","attrs":{"164a072338ba0":{"x":{},"y":{},"color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"month","type":"category","categoryorder":"array","categoryarray":["April","February","June","May","September","January","March","August","July","October","November","December"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"n"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["April"],"y":[5],"type":"bar","name":"April","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["February"],"y":[8],"type":"bar","name":"February","marker":{"color":"rgba(211,164,122,1)","line":{"color":"rgba(211,164,122,1)"}},"textfont":{"color":"rgba(211,164,122,1)"},"error_y":{"color":"rgba(211,164,122,1)"},"error_x":{"color":"rgba(211,164,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["June"],"y":[8],"type":"bar","name":"June","marker":{"color":"rgba(229,147,127,1)","line":{"color":"rgba(229,147,127,1)"}},"textfont":{"color":"rgba(229,147,127,1)"},"error_y":{"color":"rgba(229,147,127,1)"},"error_x":{"color":"rgba(229,147,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["May"],"y":[8],"type":"bar","name":"May","marker":{"color":"rgba(156,159,194,1)","line":{"color":"rgba(156,159,194,1)"}},"textfont":{"color":"rgba(156,159,194,1)"},"error_y":{"color":"rgba(156,159,194,1)"},"error_x":{"color":"rgba(156,159,194,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["September"],"y":[9],"type":"bar","name":"September","marker":{"color":"rgba(194,150,199,1)","line":{"color":"rgba(194,150,199,1)"}},"textfont":{"color":"rgba(194,150,199,1)"},"error_y":{"color":"rgba(194,150,199,1)"},"error_x":{"color":"rgba(194,150,199,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["January"],"y":[11],"type":"bar","name":"January","marker":{"color":"rgba(223,155,177,1)","line":{"color":"rgba(223,155,177,1)"}},"textfont":{"color":"rgba(223,155,177,1)"},"error_y":{"color":"rgba(223,155,177,1)"},"error_x":{"color":"rgba(223,155,177,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["March"],"y":[11],"type":"bar","name":"March","marker":{"color":"rgba(182,204,108,1)","line":{"color":"rgba(182,204,108,1)"}},"textfont":{"color":"rgba(182,204,108,1)"},"error_y":{"color":"rgba(182,204,108,1)"},"error_x":{"color":"rgba(182,204,108,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["August"],"y":[12],"type":"bar","name":"August","marker":{"color":"rgba(209,217,69,1)","line":{"color":"rgba(209,217,69,1)"}},"textfont":{"color":"rgba(209,217,69,1)"},"error_y":{"color":"rgba(209,217,69,1)"},"error_x":{"color":"rgba(209,217,69,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["July"],"y":[12],"type":"bar","name":"July","marker":{"color":"rgba(253,215,61,1)","line":{"color":"rgba(253,215,61,1)"}},"textfont":{"color":"rgba(253,215,61,1)"},"error_y":{"color":"rgba(253,215,61,1)"},"error_x":{"color":"rgba(253,215,61,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["October"],"y":[12],"type":"bar","name":"October","marker":{"color":"rgba(237,202,125,1)","line":{"color":"rgba(237,202,125,1)"}},"textfont":{"color":"rgba(237,202,125,1)"},"error_y":{"color":"rgba(237,202,125,1)"},"error_x":{"color":"rgba(237,202,125,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["November"],"y":[14],"type":"bar","name":"November","marker":{"color":"rgba(212,190,160,1)","line":{"color":"rgba(212,190,160,1)"}},"textfont":{"color":"rgba(212,190,160,1)"},"error_y":{"color":"rgba(212,190,160,1)"},"error_x":{"color":"rgba(212,190,160,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["December"],"y":[15],"type":"bar","name":"December","marker":{"color":"rgba(179,179,179,1)","line":{"color":"rgba(179,179,179,1)"}},"textfont":{"color":"rgba(179,179,179,1)"},"error_y":{"color":"rgba(179,179,179,1)"},"error_x":{"color":"rgba(179,179,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
 
 
 

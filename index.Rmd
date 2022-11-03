@@ -19,4 +19,4 @@ output:
 * [Here](about.html) is a brief intro about myself. Feel free to check it out.
 * [Here](https://github.com/sophienim/jc5924.github.io) is my github repository for this assignment. 
 * [Here](https://www.linkedin.com/in/sophie-chen-0065231b7/) is my LinkedIn. Feel free to connect me on LinkedIn! 
-* [Here](dashboard.html) is quick access to the plots for Instacart.
+* [Here](dashboard.html) is quick access to the plots for NY NOAA.

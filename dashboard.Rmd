@@ -1,5 +1,5 @@
 ---
-title: "Dashboard for instacart data"
+title: "Dashboard for NY NOAA data"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -11,7 +11,72 @@ library(tidyverse)
 library(flexdashboard)
 library(p8105.datasets)
 library(plotly)
-
-data("instacart")
 ```
+
+* Data of NY NOAA in year 2007
+```{r}
+data("ny_noaa")
+
+ny_noaa=
+  ny_noaa %>% 
+  slice_sample(n=4000) %>% 
+  janitor::clean_names() %>% 
+  separate(date,into = c("year","month","day")) %>%
+  mutate(year=as.integer(year),
+         month=month.name[as.numeric(month)],
+         day=as.numeric(day),
+         prcp=as.numeric(prcp)/10,
+         tmax=as.numeric(tmax)/10,
+         tmin=as.numeric(tmin)/10) %>% 
+  filter(year==2007) %>% 
+  select(-id,-snwd)
+ny_noaa
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+### Plot 1: Tmax(C) VS Tmin(C) for the year 2007
+```{r}
+ny_noaa %>% 
+  mutate(text_label=str_c("month:", month)) %>% 
+  plot_ly(
+    x = ~ tmin, 
+    y = ~ tmax, 
+    color = ~ month, 
+    type = "scatter", 
+    mode = "markers", 
+    colors="viridis",
+    text = ~ text_label,
+    alpha = 0.5
+    )
+```
+Column {data-width=350}
+-----------------------------------------------------------------------
+### Plot 2: tmin(C) distribution for the year 2007
+```{r}
+ny_noaa %>% 
+  plot_ly(
+    y = ~ tmin, 
+    x = ~ month, 
+    color = ~ month, 
+    text = ~ month, 
+    type = "box", 
+    colors = "viridis")
+```
+
+### Plot 3: Recorded distribution in each month for 2007
+```{r}
+ny_noaa %>% 
+  drop_na(month) %>%
+  count(month) %>% 
+  mutate(month = fct_reorder(month, n)) %>% 
+  plot_ly(x = ~month, 
+          y = ~n, 
+          color = ~month, 
+          type = "bar")
+```
+
+
+
+
 
