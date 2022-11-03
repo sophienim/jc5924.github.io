@@ -35,6 +35,7 @@ ny_noaa
 
 Column {data-width=650}
 -----------------------------------------------------------------------
+
 ### Plot 1: Tmax(C) VS Tmin(C) for the year 2007
 ```{r}
 ny_noaa %>% 
@@ -52,6 +53,7 @@ ny_noaa %>%
 ```
 Column {data-width=350}
 -----------------------------------------------------------------------
+
 ### Plot 2: tmin(C) distribution for the year 2007
 ```{r}
 ny_noaa %>% 
