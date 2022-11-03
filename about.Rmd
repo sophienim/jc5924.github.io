@@ -1,11 +1,15 @@
 ---
-title: "About"
+title: "About Me..."
 output: 
   html_document:
     toc: true
     toc_float: true
 ---
 
-### About Me...
+### A little about myself...
+* Currently studying at Columbia University, under the department of Biostatisitcs with a track of theory and method.
+* Love traveling, snowboarding, outdoor activities etc...
 
+### Something more...
 * If you want to know more about me, please feel free to take a quick look of my [resume](resume.html).
+* And here is my [github repository](https://github.com/sophienim/jc5924.github.io) for this assignment.
